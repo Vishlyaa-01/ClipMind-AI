@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipMind AI | Video Studio</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0b0b10;
+            color: #f5f5f7;
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 245px;
+            background: #111117;
+            border-right: 1px solid #24242e;
+            padding: 28px 18px;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 45px;
+        }
+
+        .logo span {
+            color: #a78bfa;
+        }
+
+        .nav-title {
+            color: #777786;
+            font-size: 11px;
+            margin: 25px 12px 12px;
+            letter-spacing: 1.5px;
+        }
+
+        .nav-item {
+            padding: 13px;
+            border-radius: 9px;
+            color: #aaaab8;
+            margin-bottom: 7px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            background: #28203e;
+            color: #c4aaff;
+        }
+
+        .main {
+            flex: 1;
+            padding: 35px 45px;
+            max-width: 1300px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 45px;
+        }
+
+        .topbar p {
+            color: #858592;
+            margin-top: 7px;
+        }
+
+        .avatar {
+            background: #30234d;
+            color: #c4aaff;
+            padding: 12px 16px;
+            border-radius: 12px;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #92929f;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: #14141c;
+            border: 1px solid #292936;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 9px;
+        }
+
+        .muted {
+            color: #92929f;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+
+        .upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            min-height: 220px;
+            box-sizing: border-box;
+
+            border: 2px dashed #514071;
+            background: #1a1724;
+            border-radius: 12px;
+
+            padding: 35px 20px;
+            text-align: center;
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+        }
+
+        .upload:hover {
+            border-color: #a78bfa;
+            background: #211c30;
+        }
+
+        .upload-icon {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .upload h3 {
+            margin-bottom: 9px;
+        }
+
+        .upload p {
+            color: #858592;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+
+        input, select {
+            width: 100%;
+            background: #1d1d28;
+            border: 1px solid #353542;
+            color: white;
+            padding: 13px;
+            border-radius: 8px;
+            margin-top: 10px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #a78bfa;
+        }
+
+        .url-section {
+            margin-top: 22px;
+        }
+
+        .settings {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        label {
+            color: #bdbdc9;
+            font-size: 13px;
+        }
+
+        .primary-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #7046c7, #a16bea);
+            border: none;
+            padding: 15px;
+            border-radius: 9px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+        }
+
+        .primary-btn:hover {
+            opacity: 0.9;
+        }
+
+        .status {
+            color: #a78bfa;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        .caption-option {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-top: 22px;
+            padding: 16px 18px;
+            background: #1a1724;
+            border: 1px solid #353047;
+            border-radius: 11px;
+            cursor: pointer;
+        }
+        .caption-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            padding: 0;
+            accent-color: #a78bfa;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .caption-option strong { display: block; color: #f5f5f7; font-size: 14px; }
+        .caption-option small { display: block; color: #92929f; margin-top: 5px; font-size: 12px; line-height: 1.5; }
+
+        @media(max-width: 800px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                padding: 22px;
+            }
+
+            .settings {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Video information panel */
+        .main { min-width: 0; }
+        .metadata-panel { border-color: #514071; }
+        .metadata-panel[hidden] { display: none; }
+        .metadata-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .metadata-badge { color: #86efac; background: #20352b; padding: 6px 10px; border-radius: 8px; font-size: 12px; }
+        .metadata-filename { color: #92929f; font-size: 13px; overflow-wrap: anywhere; margin: 8px 0 20px; }
+        .metadata-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .metadata-card { background: #1d1d28; border: 1px solid #353542; border-radius: 10px; padding: 18px; }
+        .metadata-card span { display: block; color: #92929f; font-size: 12px; margin-bottom: 8px; }
+        .metadata-card strong { font-size: 20px; overflow-wrap: anywhere; }
+        .metadata-details { margin-top: 20px; }
+        .metadata-row { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid #292936; font-size: 14px; }
+        .metadata-row dt { color: #92929f; }
+        .metadata-row dd { text-align: right; overflow-wrap: anywhere; }
+        .metadata-note { background: #28203e; color: #c4aaff; border-radius: 9px; padding: 14px; margin-top: 20px; font-size: 13px; }
+        .primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .status { overflow-wrap: anywhere; }
+        @media (max-width: 480px) { .metadata-grid { grid-template-columns: 1fr; } }
+        .progress-panel { margin-top: 20px; padding: 18px; background: #1a1724; border: 1px solid #514071; border-radius: 12px; }
+        .progress-panel[hidden], #resultsPanel[hidden] { display: none; }
+        .progress-top { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 13px; font-size: 13px; }
+        .progress-track { height: 12px; background: #303041; border-radius: 999px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg,#7046c7,#b794f6); transition: width .35s ease; }
+        .progress-panel .muted { margin: 12px 0 0; }
+        .clips-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 14px; }
+        .clip-card { background: #1d1d28; border: 1px solid #353542; border-radius: 11px; padding: 18px; }
+        .clip-card h3 { font-size: 15px; margin-bottom: 9px; }
+        .clip-card p { color: #aaaab8; font-size: 13px; margin-top: 7px; overflow-wrap: anywhere; }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">ClipMind <span>AI.</span></div>
+
+        <div class="nav-title">WORKSPACE</div>
+
+        <div class="nav-item active">⌂ &nbsp; Dashboard</div>
+        <div class="nav-item">▣ &nbsp; My Projects</div>
+        <div class="nav-item">▶ &nbsp; Generated Clips</div>
+
+        <div class="nav-title">PREFERENCES</div>
+
+        <div class="nav-item">⚙ &nbsp; Settings</div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h2>Video Studio</h2>
+                <p>Your personal AI clipping workspace</p>
+            </div>
+
+            <div class="avatar">VY</div>
+        </header>
+
+        <h1>Turn long videos into viral shorts.</h1>
+
+        <p class="subtitle">
+            Let AI discover the most interesting moments in your videos.
+        </p>
+
+        <section class="panel">
+
+            <h2>01. Add your video</h2>
+
+            <p class="muted">
+                Upload a video from your computer or paste a YouTube link below.
+            </p>
+
+            <label class="upload" for="videoFile">
+                <div class="upload-icon">☁</div>
+                <h3>Drop your video here</h3>
+                <p>or click to browse files</p>
+                <p>MP4, MOV, MKV and other supported formats</p>
+            </label>
+
+            <input
+                type="file"
+                id="videoFile"
+                accept="video/*"
+                hidden
+            >
+
+            <p id="fileStatus" class="status">
+                No video selected
+            </p>
+
+            <div class="url-section">
+                <label>YouTube video URL</label>
+
+                <input
+                    type="url"
+                    id="youtubeUrl"
+                    placeholder="Paste your YouTube video link here..."
+                >
+            </div>
+
+        </section>
+
+        <section class="panel">
+
+            <h2>02. Customize your clips</h2>
+
+            <p class="muted">
+                Choose how your AI-generated shorts should look.
+            </p>
+
+            <div class="settings">
+
+                <div>
+                    <label>Clip Duration</label>
+                    <select id="duration">
+                        <option>20 seconds</option>
+                        <option selected>30 seconds</option>
+                        <option>45 seconds</option>
+                        <option>60 seconds</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Number of Clips</label>
+                    <select id="clipCount">
+                        <option>3 clips</option>
+                        <option selected>5 clips</option>
+                        <option>10 clips</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Aspect Ratio</label>
+                    <select id="ratio">
+                        <option value="9:16" selected>9:16 (Reels / Shorts)</option>
+                        
+                        
+                    </select>
+                </div>
+
+            </div>
+
+            <label class="caption-option" for="enableCaptions">
+                <input type="checkbox" id="enableCaptions">
+                <span>
+                    <strong>Enable Captions</strong>
+                    <small>Off by default. Turn on to add AI-generated subtitles to your Shorts.</small>
+                </span>
+            </label>
+
+            <button id="generateButton" class="primary-btn" onclick="startProcessing()">
+                ✦ &nbsp; Generate AI Clips
+            </button>
+
+            <p id="processingStatus" class="status" role="status" aria-live="polite"></p>
+            <div id="progressPanel" class="progress-panel" hidden>
+                <div class="progress-top"><strong id="progressStage">Waiting...</strong><strong id="progressPercent">0%</strong></div>
+                <div class="progress-track" role="progressbar" aria-label="Video processing progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div id="progressFill" class="progress-fill"></div></div>
+                <p id="progressMessage" class="muted"></p>
+            </div>
+
+        </section>
+
+
+        <section id="resultsPanel" class="panel" hidden>
+            <h2>04. Generated Shorts</h2>
+            <p class="muted" id="resultsSummary"></p>
+            <div id="clipsList" class="clips-grid"></div>
+            <p class="muted" style="margin-top:16px">Preview and download your finished Shorts above.</p>
+        </section>
+
+        <section id="videoInfo" class="panel metadata-panel" hidden>
+            <div class="metadata-heading">
+                <h2>03. Video Information</h2>
+                <span class="metadata-badge">Analyzed</span>
+            </div>
+            <p id="infoFilename" class="metadata-filename"></p>
+            <div class="metadata-grid">
+                <div class="metadata-card"><span>DURATION</span><strong id="infoDuration"></strong></div>
+                <div class="metadata-card"><span>RESOLUTION</span><strong id="infoResolution"></strong></div>
+                <div class="metadata-card"><span>FILE SIZE</span><strong id="infoSize"></strong></div>
+                <div class="metadata-card"><span>AUDIO</span><strong id="infoAudio"></strong></div>
+            </div>
+            <dl class="metadata-details">
+                <div class="metadata-row"><dt>Video codec</dt><dd id="infoVideoCodec"></dd></div>
+                <div class="metadata-row"><dt>Audio codec</dt><dd id="infoAudioCodec"></dd></div>
+                <div class="metadata-row"><dt>Format</dt><dd id="infoFormat"></dd></div>
+            </dl>
+            <p class="metadata-note">✓ Video analysis complete. Ready for the next processing stage.</p>
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    const videoInput = document.getElementById("videoFile");
+    const youtubeInput = document.getElementById("youtubeUrl");
+    const status = document.getElementById("processingStatus");
+    const button = document.getElementById("generateButton");
+    const videoInfo = document.getElementById("videoInfo");
+    const progressPanel = document.getElementById("progressPanel");
+    const resultsPanel = document.getElementById("resultsPanel");
+    const originalButtonText = button.textContent;
+
+    let processing = false;
+
+    videoInput.addEventListener("change", function () {
+        const file = this.files[0];
+
+        document.getElementById("fileStatus").textContent =
+            file ? "Selected: " + file.name : "No video selected";
+
+        videoInfo.hidden = true;
+        resultsPanel.hidden = true;
+        progressPanel.hidden = true;
+        status.textContent = "";
+    });
+
+    function formatDuration(seconds) {
+        if (
+            seconds == null ||
+            !Number.isFinite(Number(seconds)) ||
+            Number(seconds) < 0
+        ) {
+            return "Unknown";
+        }
+
+        const total = Math.round(Number(seconds));
+        const hours = Math.floor(total / 3600);
+        const minutes = Math.floor((total % 3600) / 60);
+        const secs = total % 60;
+
+        return (hours ? hours + "h " : "") +
+            minutes + "m " + secs + "s";
+    }
+
+    function showVideoInfo(result) {
+        const data = result.metadata;
+
+        if (!data) {
+            throw new Error(
+                "The server did not return video metadata."
+            );
+        }
+
+        const setText = (id, value) => {
+            document.getElementById(id).textContent = value;
+        };
+
+        setText(
+            "infoFilename",
+            result.original_filename || data.filename || "Unknown"
+        );
+
+        setText(
+            "infoDuration",
+            formatDuration(data.duration_seconds)
+        );
+
+        setText(
+            "infoResolution",
+            data.width && data.height
+                ? data.width + " × " + data.height
+                : "Unknown"
+        );
+
+        setText(
+            "infoSize",
+            result.size_mb != null
+                ? result.size_mb + " MB"
+                : "Unknown"
+        );
+
+        setText(
+            "infoAudio",
+            data.has_audio ? "Detected" : "Not detected"
+        );
+
+        setText(
+            "infoVideoCodec",
+            (data.video_codec || "Unknown").toUpperCase()
+        );
+
+        setText(
+            "infoAudioCodec",
+            data.audio_codec
+                ? data.audio_codec.toUpperCase()
+                : "None"
+        );
+
+        setText(
+            "infoFormat",
+            data.format || "Unknown"
+        );
+
+        videoInfo.hidden = false;
+    }
+
+    async function apiJson(url, options = {}) {
+        const response = await fetch(url, {
+            cache: "no-store",
+            ...options
+        });
+
+        let result;
+
+        try {
+            result = await response.json();
+        } catch {
+            throw new Error(
+                "Server returned an invalid response (HTTP " +
+                response.status + ")."
+            );
+        }
+
+        if (!response.ok) {
+            const detail = result.detail;
+
+            throw new Error(
+                typeof detail === "string"
+                    ? detail
+                    : "Request failed (HTTP " +
+                      response.status + ")."
+            );
+        }
+
+        return result;
+    }
+
+    function updateProgress(job) {
+        const percent = Math.min(
+            100,
+            Math.max(0, Number(job.progress) || 0)
+        );
+
+        const stage = String(
+            job.stage || job.status || "Processing"
+        ).replaceAll("_", " ");
+
+        document.getElementById("progressStage").textContent =
+            stage;
+
+        document.getElementById("progressPercent").textContent =
+            Math.round(percent) + "%";
+
+        document.getElementById("progressFill").style.width =
+            percent + "%";
+
+        document.getElementById("progressTrack").setAttribute(
+            "aria-valuenow",
+            String(Math.round(percent))
+        );
+
+        document.getElementById("progressMessage").textContent =
+            job.message || "AI is processing your video...";
+
+        status.textContent =
+            "Job " + job.status + " — " +
+            Math.round(percent) + "%";
+    }
+
+    function showResults(job) {
+        const clips = Array.isArray(job.result?.clips)
+            ? job.result.clips
+            : [];
+
+        const jobId = String(job.job_id || "");
+
+        document.getElementById("resultsSummary").textContent =
+            clips.length +
+            " generated Shorts. Processing complete.";
+
+        const list = document.getElementById("clipsList");
+
+        list.replaceChildren();
+
+        clips.forEach((clip, index) => {
+            const clipId = Number(clip.clip_id);
+
+            const card = document.createElement("article");
+            card.className = "clip-card";
+
+            const heading = document.createElement("h3");
+
+            heading.textContent =
+                clip.title || "Highlight " + (index + 1);
+
+            card.appendChild(heading);
+
+            const details = [
+                "Duration: " + formatDuration(
+                    clip.duration_seconds ??
+                    clip.duration ??
+                    (Number(clip.end) - Number(clip.start))
+                ),
+                "Score: " + (clip.score ?? "N/A"),
+                "File: " + (
+                    clip.filename || "Generated clip"
+                )
+            ];
+
+            details.forEach(text => {
+                const p = document.createElement("p");
+                p.textContent = text;
+                card.appendChild(p);
+            });
+
+            if (
+                jobId &&
+                Number.isInteger(clipId) &&
+                clipId > 0
+            ) {
+                const previewUrl =
+                    "/api/jobs/" +
+                    encodeURIComponent(jobId) +
+                    "/clips/" +
+                    encodeURIComponent(String(clipId));
+
+                const downloadUrl =
+                    previewUrl + "/download";
+
+                // Embedded vertical video player
+                const player = document.createElement("video");
+
+                player.controls = true;
+                player.preload = "metadata";
+                player.playsInline = true;
+                player.src = previewUrl;
+
+                player.style.display = "block";
+                player.style.width = "100%";
+                player.style.maxWidth = "320px";
+                player.style.aspectRatio = "9 / 16";
+                player.style.objectFit = "contain";
+                player.style.background = "#090711";
+                player.style.borderRadius = "14px";
+                player.style.marginTop = "14px";
+                player.style.marginBottom = "14px";
+
+                card.appendChild(player);
+
+                // Download button
+                const downloadButton =
+                    document.createElement("a");
+
+                downloadButton.href = downloadUrl;
+                downloadButton.textContent = "⬇ Download MP4";
+
+                downloadButton.style.display =
+                    "inline-block";
+
+                downloadButton.style.padding =
+                    "11px 18px";
+
+                downloadButton.style.borderRadius =
+                    "10px";
+
+                downloadButton.style.background =
+                    "linear-gradient(135deg, #8b5cf6, #6d28d9)";
+
+                downloadButton.style.color = "#ffffff";
+                downloadButton.style.fontWeight = "600";
+                downloadButton.style.textDecoration = "none";
+                downloadButton.style.marginRight = "10px";
+                downloadButton.style.marginBottom = "10px";
+
+                card.appendChild(downloadButton);
+
+                // Open video in another browser tab
+                const openLink =
+                    document.createElement("a");
+
+                openLink.href = previewUrl;
+                openLink.target = "_blank";
+                openLink.rel = "noopener noreferrer";
+                openLink.textContent = "Open video";
+
+                openLink.style.color = "#c4b5fd";
+                openLink.style.textDecoration = "none";
+
+                card.appendChild(openLink);
+            }
+
+            list.appendChild(card);
+        });
+
+        resultsPanel.hidden = false;
+    }
+
+    async function waitForJob(jobId) {
+        while (true) {
+            await new Promise(
+                resolve => setTimeout(resolve, 2000)
+            );
+
+            const job = await apiJson(
+                "/api/jobs/" +
+                encodeURIComponent(jobId)
+            );
+
+            updateProgress(job);
+
+            if (job.status === "completed") {
+                showResults(job);
+
+                status.textContent =
+                    "Success! Your AI Shorts are ready.";
+
+                return;
+            }
+
+            if (
+                ["failed", "interrupted"].includes(job.status)
+            ) {
+                throw new Error(
+                    job.error ||
+                    job.message ||
+                    "Processing did not finish."
+                );
+            }
+        }
+    }
+
+    async function startProcessing() {
+        if (processing) return;
+
+        const file = videoInput.files[0];
+        const youtubeUrl = youtubeInput.value.trim();
+
+        if (!file && !youtubeUrl) {
+            status.textContent = "Please select a local video or paste a YouTube link.";
+            return;
+        }
+
+        if (file && youtubeUrl) {
+            status.textContent = "Choose one source: remove the selected file or clear the YouTube link.";
+            return;
+        }
+
+        if (file && file.size > 500 * 1024 * 1024) {
+            status.textContent = "Video exceeds the 500 MB upload limit.";
+            return;
+        }
+
+        processing = true;
+        button.disabled = true;
+        videoInput.disabled = true;
+        youtubeInput.disabled = true;
+        resultsPanel.hidden = true;
+        progressPanel.hidden = false;
+        videoInfo.hidden = true;
+        button.textContent = "Processing your video...";
+
+        const isYouTube = Boolean(youtubeUrl);
+        const initialMessage = isYouTube
+            ? "Importing your YouTube video. This may take several minutes..."
+            : "Uploading and analyzing your video...";
+
+        status.textContent = initialMessage;
+        updateProgress({
+            status: isYouTube ? "importing" : "uploading",
+            stage: isYouTube ? "importing YouTube video" : "uploading video",
+            progress: 0,
+            message: initialMessage
+        });
+
+        try {
+            let uploaded;
+
+            if (isYouTube) {
+                // The API imports the source video into storage/uploads.
+                // This request can take time; it does not start AI processing.
+                uploaded = await apiJson("/api/youtube/import", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: youtubeUrl })
+                });
+            } else {
+                const formData = new FormData();
+                formData.append("file", file);
+                uploaded = await apiJson("/api/upload", {
+                    method: "POST",
+                    body: formData
+                });
+            }
+
+            if (!uploaded.saved_filename) {
+                throw new Error("Import did not return a saved video filename.");
+            }
+
+            showVideoInfo(uploaded);
+            status.textContent = "Video analyzed. Starting AI pipeline...";
+
+            const clipCount = parseInt(
+                document.getElementById("clipCount").value, 10
+            );
+            const maxDuration = parseInt(
+                document.getElementById("duration").value, 10
+            );
+
+            const request = {
+                video_filename: uploaded.saved_filename,
+                clip_count: clipCount,
+                min_duration: 20,
+                max_duration: maxDuration,
+                vertical_mode: "blur_background",
+                caption_style: "word_highlight",
+                enable_captions: document.getElementById("enableCaptions").checked,
+                width: 720,
+                height: 1280
+            };
+
+            const job = await apiJson("/api/process", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(request)
+            });
+
+            if (!job.job_id) {
+                throw new Error("Server did not return a job ID.");
+            }
+
+            updateProgress({
+                status: "queued",
+                stage: "queued",
+                progress: 0,
+                message: "Job created: " + job.job_id
+            });
+
+            await waitForJob(job.job_id);
+        } catch (error) {
+            status.textContent = "Error: " + error.message;
+            document.getElementById("progressMessage").textContent = error.message;
+            console.error("ClipMind processing error:", error);
+        } finally {
+            processing = false;
+            button.disabled = false;
+            videoInput.disabled = false;
+            youtubeInput.disabled = false;
+            button.textContent = originalButtonText;
+        }
+    }
+
+    // ------------------------------------------------
+    // Restore the latest completed job on page load
+    // ------------------------------------------------
+
+    async function restoreCompletedJob() {
+        try {
+            // Do not overwrite an active new processing session.
+            if (processing) return;
+
+            const history = await apiJson("/api/jobs");
+
+            const jobs = Array.isArray(history.jobs)
+                ? history.jobs
+                : [];
+
+            const completedJobs = jobs
+                .filter(job =>
+                    job.status === "completed" &&
+                    job.job_id
+                )
+                .sort((a, b) =>
+                    String(b.created_at || "").localeCompare(
+                        String(a.created_at || "")
+                    )
+                );
+
+            if (completedJobs.length === 0) {
+                console.log(
+                    "ClipMind: No completed jobs to restore."
+                );
+                return;
+            }
+
+            const latest = completedJobs[0];
+
+            const job = await apiJson(
+                "/api/jobs/" +
+                encodeURIComponent(latest.job_id)
+            );
+
+            if (processing) return;
+
+            if (job.status !== "completed") return;
+
+            updateProgress(job);
+            progressPanel.hidden = false;
+
+            showResults(job);
+
+            status.textContent =
+                "Previous completed job restored. " +
+                "Your AI Shorts are ready!";
+
+            console.log(
+                "ClipMind: Restored completed job:",
+                job.job_id
+            );
+
+        } catch (error) {
+            console.error(
+                "ClipMind: Could not restore previous job:",
+                error
+            );
+
+            // Keep the upload dashboard usable even
+            // if job restoration fails.
+        }
+    }
+
+    // Automatically restore saved Shorts on refresh.
+    restoreCompletedJob();
+</script>
+
+
+</body>
+</html>

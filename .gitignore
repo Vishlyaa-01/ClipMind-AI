@@ -1,0 +1,58 @@
+
+# Python virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Uploaded videos and generated Shorts
+storage/uploads/
+storage/output/
+storage/jobs/
+storage/temp/
+storage/tmp/
+
+# Local media and generated files
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.mp3
+*.wav
+*.srt
+*.ass
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local logs
+*.log
+
+
+# Downloaded AI models and caches
+models/whisper/
+models/huggingface/
+
+# Old Python backups
+*_backup*.py
+*_before_*.py
+
+# Old dashboard backups
+frontend/indexOld*
+frontend/indexold*
+frontend/index_backup*
+frontend/index_before_*

@@ -1,0 +1,7 @@
+
+fastapi==0.163.1
+uvicorn==0.54.0
+python-multipart==0.0.34
+faster-whisper==1.2.1
+yt-dlp==2026.10.26
+numpy==2.5.5
